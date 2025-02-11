@@ -12,9 +12,20 @@ Artissimo is a custom learning management system built for the University of Sou
 - [PostgreSQL](https://www.postgresql.org/) - Database
 - [Supabase](https://supabase.co/) – Authentication
 
+### Core Concepts
+
+Artissimo was designed to host learning content in a book-based structure. Below are definitions of some core concepts:
+
+* **Users**: Users of the app, which come in four permission-based flavors: admin, instructor, student, and guest
+    * Each user type is associated with a slightly different in-app view
+* **Books**: Collections of chapters
+* **Chapters**: A knowledge entity containing text, inline reflection questions, and attached media
+* **Courses**: Segmented groups of users
+    * A course is associated with one book, allowing users of the course to access the chapters within the book
+
 ### Data Models
 
-Artissimo was designed to host learning content in a book-based structure. It supports four user types: admins, instructors, students, and guests. Each has varying levels of access to resources. Below is a diagram of the data models, designed with [dbdiagram.io](https://dbdiagram.io/).
+Below is a diagram of the database models (created using[dbdiagram.io](https://dbdiagram.io/)):
 
 ![Artissimo data models](./public/data-models.png "Artissimo Data Models")
 
@@ -22,13 +33,19 @@ Artissimo was designed to host learning content in a book-based structure. It su
 
 This project is currently in active development. Please check back later!
 
-#### V1
-* Role-Based Views (Admin, Instructor, Student, Guest)
-* User Management
-* Book/Chapter Management
-* Course Management
-* Chapter Content Management
+#### V0
+* Admin & Instructor Views
+    * User management
+    * Book / Chapter management
+    * Course management
+    * Role previews
+* Student & Guest Views
+    * Book / Chapter views
 
 #### V1
-* Reflection Questions Submission
-* Reflection Questions Review & Export
+* Inline reflection question versioning
+* Admin & Instructor Views
+    * Reflection question creation
+    * Reflection question review and export
+* Student & Guest Views
+    * Reflection question submission
