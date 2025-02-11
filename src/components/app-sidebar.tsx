@@ -5,12 +5,10 @@ import {
     Sidebar,
     SidebarContent,
     SidebarFooter,
-    SidebarHeader,
     SidebarMenuButton,
     SidebarRail,
     SidebarSeparator,
     SidebarTrigger,
-    useSidebar,
 } from "@/components/ui/sidebar";
 import { type User } from "@supabase/supabase-js";
 import { NavGroup } from "./nav-group";
@@ -46,14 +44,12 @@ interface AppSidebarProps extends React.ComponentProps<typeof Sidebar> {
 }
 
 export const AppSidebar: React.FC<AppSidebarProps> = ({ user, ...props }) => {
-    const { state } = useSidebar();
-
     return (
         <Sidebar collapsible="icon" {...props}>
             <SidebarTrigger className="m-2 mb-6" />
             <SidebarSeparator />
             <SidebarContent className="gap-0">
-                <SidebarMenuButton className="ml-2 cursor-default hover:bg-transparent">
+                <SidebarMenuButton className="ml-2 cursor-default hover:bg-transparent active:bg-transparent">
                     <TbBrandNeteaseMusic className="text-red-500" />
                     <h1 className="text-lg font-medium">artissimo</h1>
                 </SidebarMenuButton>
