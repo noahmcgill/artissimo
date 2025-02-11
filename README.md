@@ -36,7 +36,7 @@ Finally, seed an admin user in the database:
 npm run db:seed -- --email "<email>" --name "<name>" --password "<password>"
 ```
 
-This should only be done once. To create new users, login with the seeded user and create additional users in the UI.
+This should only be done once. To create new users, login with the seeded user and create additional users in the UI. After running this step, you'll need to login to your inbox and confirm your email via a link Supabase will send you.
 
 ### Core Concepts
 

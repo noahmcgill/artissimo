@@ -10,12 +10,12 @@ import {
     SidebarSeparator,
     SidebarTrigger,
 } from "@/components/ui/sidebar";
-import { type User } from "@supabase/supabase-js";
 import { NavGroup } from "./nav-group";
 import { NavUser } from "./nav-user";
 import { TfiBlackboard } from "react-icons/tfi";
 import { TbBrandNeteaseMusic } from "react-icons/tb";
 import { LuCircleHelp, LuUsers } from "react-icons/lu";
+import { type ArtissimoUser } from "@/lib/types/user";
 
 const data = {
     general: {
@@ -40,7 +40,7 @@ const data = {
 };
 
 interface AppSidebarProps extends React.ComponentProps<typeof Sidebar> {
-    user: User | null;
+    user: ArtissimoUser | null;
 }
 
 export const AppSidebar: React.FC<AppSidebarProps> = ({ user, ...props }) => {

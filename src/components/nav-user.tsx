@@ -18,17 +18,17 @@ import {
 } from "@/components/ui/sidebar";
 import React from "react";
 import { DropdownMenuItem } from "./dropdown-menu-item";
-import { type User } from "@supabase/supabase-js";
 import { getAvatarFallback } from "@/lib/utils/avatar";
 import { logout } from "@/app/(auth)/login/actions";
+import { type ArtissimoUser } from "@/lib/types/user";
 
 interface NavUserProps {
-    user: User | null;
+    user: ArtissimoUser | null;
 }
 
 export const NavUser: React.FC<NavUserProps> = ({ user }) => {
     const { isMobile } = useSidebar();
-    const avatarFallback = getAvatarFallback(user?.email ?? "", "U");
+    const avatarFallback = getAvatarFallback(user?.name ?? "", "U");
 
     // @todo: pull user data from database (right now we're just using the email)
 
@@ -52,7 +52,7 @@ export const NavUser: React.FC<NavUserProps> = ({ user }) => {
                             </Avatar>
                             <div className="grid flex-1 text-left text-sm leading-tight">
                                 <span className="truncate font-semibold">
-                                    {user?.email}
+                                    {user?.name}
                                 </span>
                                 <span className="truncate text-xs">
                                     {user?.email}
@@ -71,8 +71,8 @@ export const NavUser: React.FC<NavUserProps> = ({ user }) => {
                             <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
                                 <Avatar className="h-8 w-8 rounded-lg">
                                     <AvatarImage
-                                        src={user?.email ?? ""}
-                                        alt={user?.email ?? ""}
+                                        src={user?.name ?? ""}
+                                        alt={user?.name ?? ""}
                                     />
                                     <AvatarFallback className="rounded-lg">
                                         {avatarFallback}
@@ -80,7 +80,7 @@ export const NavUser: React.FC<NavUserProps> = ({ user }) => {
                                 </Avatar>
                                 <div className="grid flex-1 text-left text-sm leading-tight">
                                     <span className="truncate font-semibold">
-                                        {user?.email}
+                                        {user?.name}
                                     </span>
                                     <span className="truncate text-xs">
                                         {user?.email}

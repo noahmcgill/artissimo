@@ -4,8 +4,8 @@ import {
     SidebarTrigger,
 } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/app-sidebar";
-import { createClient } from "@/lib/utils/supabase/server";
 import { type Metadata } from "next";
+import { server_getUserWithMetadata } from "@/lib/utils/user";
 
 export const metadata: Metadata = {
     title: "Home | Artissimo",
@@ -16,12 +16,11 @@ export const metadata: Metadata = {
 export default async function DashboardLayout({
     children,
 }: Readonly<{ children: React.ReactNode }>) {
-    const supabase = await createClient();
-    const { data } = await supabase.auth.getUser();
+    const user = await server_getUserWithMetadata();
 
     return (
         <SidebarProvider>
-            <AppSidebar user={data?.user} />
+            <AppSidebar user={user} />
             <div className="flex w-full flex-col p-4 pt-0 md:pt-4">
                 <div className="flex w-full flex-row justify-between py-4 md:py-0">
                     <div className="block md:hidden">logo</div>

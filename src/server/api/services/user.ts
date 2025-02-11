@@ -1,5 +1,9 @@
+import { db } from "@/server/db";
+
 export class UserService {
-    async create() {
-        console.log("created");
+    async getByEmail(email: string) {
+        return await db.user.findUnique({
+            where: { email },
+        });
     }
 }

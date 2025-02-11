@@ -1,7 +1,10 @@
 "use server";
 
+import { USER_METADATA_COOKIES_KEY } from "@/lib/constants";
 import { createClient } from "@/lib/utils/supabase/server";
+import { api } from "@/trpc/server";
 import { revalidatePath } from "next/cache";
+import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { z } from "zod";
 
@@ -31,7 +34,7 @@ export async function login(
         return { error: "Please enter a valid password." };
     }
 
-    const { error } = await supabase.auth.signInWithPassword(data);
+    const { data: user, error } = await supabase.auth.signInWithPassword(data);
 
     if (error) {
         // @todo: more robust error handling
@@ -39,6 +42,20 @@ export async function login(
             error: "The email or password you entered is incorrect. Please try again.",
         };
     }
+
+    // @todo: handle this error
+    const metadata = await api.user.getByEmail({
+        email: user.user.email ?? "",
+    });
+    const cookieStore = await cookies();
+
+    cookieStore.set(
+        USER_METADATA_COOKIES_KEY,
+        JSON.stringify({
+            name: metadata?.name ?? "",
+            role: metadata?.role ?? "",
+        }),
+    );
 
     revalidatePath("/", "layout");
     redirect("/b");
@@ -66,6 +83,12 @@ export async function signup(formData: FormData) {
 
 export async function logout() {
     const supabase = await createClient();
+
+    // @todo: handle error
     await supabase.auth.signOut();
+
+    const cookieStore = await cookies();
+    cookieStore.delete(USER_METADATA_COOKIES_KEY);
+
     redirect("/login");
 }

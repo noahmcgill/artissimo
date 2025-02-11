@@ -6,9 +6,9 @@ import { UserService } from "../services/user";
 const userService = new UserService();
 
 export const userRouter = createTRPCRouter({
-    create: publicProcedure
-        .input(z.object({ name: z.string().min(1) }))
-        .mutation(async ({ ctx, input }) => {
-            return userService.create();
+    getByEmail: publicProcedure
+        .input(z.object({ email: z.string().email() }))
+        .mutation(async ({ input }) => {
+            return userService.getByEmail(input.email);
         }),
 });
