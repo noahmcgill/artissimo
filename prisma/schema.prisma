@@ -10,11 +10,112 @@ datasource db {
     url      = env("DATABASE_URL")
 }
 
-model Post {
-    id        Int      @id @default(autoincrement())
-    name      String
-    createdAt DateTime @default(now())
-    updatedAt DateTime @updatedAt
+enum UserRole {
+  ADMIN
+  INSTRUCTOR
+  STUDENT
+  GUEST
+}
 
-    @@index([name])
+enum CourseAccessRole {
+  INSTRUCTOR
+  STUDENT
+  GUEST
+}
+
+model User {
+  id         String   @id @default(uuid())
+  role       UserRole @default(STUDENT)
+  email      String   @unique
+  firstName  String
+  lastName   String
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  
+  UserCourseAccess UserCourseAccess[]
+  ChapterAuthors   ChapterAuthor[]
+}
+
+model Course {
+  id          String   @id @default(uuid())
+  title       String
+  crn         String   @unique
+  meetingDays String
+  meetingTime DateTime
+  start       DateTime
+  end         DateTime
+  bookId      String?  @unique
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  book             Book?          @relation(fields: [bookId], references: [id])
+  UserCourseAccess UserCourseAccess[]
+}
+
+model UserCourseAccess {
+  userId String
+  courseId String
+  role CourseAccessRole @default(GUEST)
+  
+  user   User   @relation(fields: [userId], references: [id])
+  course Course @relation(fields: [courseId], references: [id])
+  
+  @@id([userId, courseId])
+}
+
+model Book {
+  id       String   @id @default(uuid())
+  title    String
+  coverUrl String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  courses Course[]
+  chapters Chapter[]
+}
+
+model Chapter {
+  id       String   @id @default(uuid())
+  bookId   String
+  title    String
+  order    Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  book    Book    @relation(fields: [bookId], references: [id])
+  authors ChapterAuthor[]
+  contents ChapterContent[]
+  media    Media[]
+  
+  @@unique([bookId, order])
+}
+
+model ChapterAuthor {
+  chapterId String
+  userId String
+  
+  chapter Chapter @relation(fields: [chapterId], references: [id])
+  user    User    @relation(fields: [userId], references: [id])
+  
+  @@id([chapterId, userId])
+}
+
+model ChapterContent {
+  chapterId String
+  createdAt DateTime
+  content   Json
+  
+  chapter Chapter @relation(fields: [chapterId], references: [id])
+  
+  @@id([chapterId, createdAt])
+}
+
+model Media {
+  id          String   @id @default(uuid())
+  chapterId   String
+  title       String?
+  contentType String?
+  url         String
+  
+  chapter Chapter @relation(fields: [chapterId], references: [id])
 }
