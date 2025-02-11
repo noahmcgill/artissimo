@@ -31,12 +31,7 @@ export const NavGroup: React.FC<NavGroupProps> = ({ title, items }) => {
                     <SidebarMenuItem key={item.title}>
                         <SidebarMenuButton tooltip={item.title} asChild>
                             <Link href={`/b${item.url}`}>
-                                {item.icon && (
-                                    <item.icon
-                                        size={20}
-                                        className="h-10 w-10"
-                                    />
-                                )}
+                                {item.icon && <item.icon />}
                                 <span className="text-medium">
                                     {item.title}
                                 </span>
