@@ -10,6 +10,7 @@
     "db:migrate": "prisma migrate deploy",
     "db:push": "prisma db push",
     "db:studio": "prisma studio",
+    "db:seed": "tsx prisma/seed.ts",
     "dev": "next dev --turbo",
     "format:check": "prettier --check \"**/*.{ts,tsx,js,jsx,mdx}\" --cache",
     "format": "prettier --write \"**/*.{ts,tsx,js,jsx,mdx}\" --cache",
@@ -43,6 +44,7 @@
     "@trpc/server": "^11.0.0-rc.446",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
+    "dotenv": "^16.4.7",
     "geist": "^1.3.0",
     "jotai": "^2.11.3",
     "lucide-react": "^0.474.0",
@@ -55,6 +57,7 @@
     "superjson": "^2.2.1",
     "tailwind-merge": "^2.6.0",
     "tailwindcss-animate": "^1.0.7",
+    "yargs": "^17.7.2",
     "zod": "^3.24.1"
   },
   "devDependencies": {
@@ -62,6 +65,7 @@
     "@types/node": "^20.14.10",
     "@types/react": "^18.3.3",
     "@types/react-dom": "^18.3.0",
+    "@types/yargs": "^17.0.33",
     "@typescript-eslint/eslint-plugin": "^8.1.0",
     "@typescript-eslint/parser": "^8.1.0",
     "eslint": "^8.57.0",
@@ -71,6 +75,7 @@
     "prettier-plugin-tailwindcss": "^0.6.5",
     "prisma": "^5.14.0",
     "tailwindcss": "^3.4.3",
+    "tsx": "^4.19.2",
     "typescript": "^5.5.3"
   },
   "ct3aMetadata": {

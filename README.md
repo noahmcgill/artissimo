@@ -9,8 +9,34 @@ Artissimo is a custom learning management system built for the University of Sou
 - [Tailwind](https://tailwindcss.com/) – CSS
 - [shadcn/ui](https://ui.shadcn.com) - UI Components
 - [Prisma](https://prisma.io) - ORM [![Made with Prisma](https://made-with.prisma.io/dark.svg)](https://prisma.io)
-- [PostgreSQL](https://www.postgresql.org/) - Database
-- [Supabase](https://supabase.co/) – Authentication
+- [Supabase](https://supabase.co/) – Database + Authentication (Supabase is a managed [PostgreSQL](https://www.postgresql.org/) database)
+
+### Getting Started
+
+Run the following command to install project dependencies:
+
+```bash
+npm install
+```
+
+Next, create a `.env` file in the root directory and add your Supabase database credentials:
+
+```
+DATABASE_URL=""
+
+NEXT_PUBLIC_SUPABASE_URL=""
+NEXT_PUBLIC_SUPABASE_ANON_KEY=""
+```
+
+`DATABASE_URL` is your database's connection string. Your `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_ANON_KEY` values can be found in the Supabase console.
+
+Finally, seed an admin user in the database:
+
+```bash
+npm run db:seed -- --email "<email>" --name "<name>" --password "<password>"
+```
+
+This should only be done once. To create new users, login with the seeded user and create additional users in the UI.
 
 ### Core Concepts
 
