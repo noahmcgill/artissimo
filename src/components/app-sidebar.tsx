@@ -6,22 +6,36 @@ import {
     SidebarContent,
     SidebarFooter,
     SidebarHeader,
+    SidebarMenuButton,
     SidebarRail,
     SidebarSeparator,
+    SidebarTrigger,
+    useSidebar,
 } from "@/components/ui/sidebar";
-import { FaHome } from "react-icons/fa";
 import { type User } from "@supabase/supabase-js";
 import { NavGroup } from "./nav-group";
 import { NavUser } from "./nav-user";
+import { TfiBlackboard } from "react-icons/tfi";
+import { TbBrandNeteaseMusic } from "react-icons/tb";
+import { LuCircleHelp, LuUsers } from "react-icons/lu";
 
 const data = {
     general: {
-        title: "General",
         items: [
             {
-                title: "Home",
-                url: "/",
-                icon: FaHome,
+                title: "Courses",
+                url: "/courses",
+                icon: TfiBlackboard,
+            },
+            {
+                title: "Users",
+                url: "/users",
+                icon: LuUsers,
+            },
+            {
+                title: "Help",
+                url: "/help",
+                icon: LuCircleHelp,
             },
         ],
     },
@@ -32,19 +46,18 @@ interface AppSidebarProps extends React.ComponentProps<typeof Sidebar> {
 }
 
 export const AppSidebar: React.FC<AppSidebarProps> = ({ user, ...props }) => {
+    const { state } = useSidebar();
+
     return (
         <Sidebar collapsible="icon" {...props}>
-            <SidebarHeader>
-                <h1 className="my-3 text-center text-2xl font-bold">
-                    Artissimo
-                </h1>
-            </SidebarHeader>
+            <SidebarTrigger className="m-2 mb-6" />
             <SidebarSeparator />
-            <SidebarContent>
-                <NavGroup
-                    title={data.general.title}
-                    items={data.general.items}
-                />
+            <SidebarContent className="gap-0">
+                <SidebarMenuButton className="ml-2 cursor-default hover:bg-transparent">
+                    <TbBrandNeteaseMusic className="text-red-500" />
+                    <h1 className="text-lg font-medium">artissimo</h1>
+                </SidebarMenuButton>
+                <NavGroup items={data.general.items} />
             </SidebarContent>
             <SidebarFooter>
                 <NavUser user={user} />

@@ -25,14 +25,21 @@ interface NavGroupProps {
 export const NavGroup: React.FC<NavGroupProps> = ({ title, items }) => {
     return (
         <SidebarGroup>
-            <SidebarGroupLabel>{title}</SidebarGroupLabel>
+            {title && <SidebarGroupLabel>{title}</SidebarGroupLabel>}
             <SidebarMenu>
                 {items.map((item) => (
                     <SidebarMenuItem key={item.title}>
                         <SidebarMenuButton tooltip={item.title} asChild>
-                            <Link href={item.url}>
-                                {item.icon && <item.icon />}
-                                <span className="text-md">{item.title}</span>
+                            <Link href={`/b${item.url}`}>
+                                {item.icon && (
+                                    <item.icon
+                                        size={20}
+                                        className="h-10 w-10"
+                                    />
+                                )}
+                                <span className="text-medium">
+                                    {item.title}
+                                </span>
                             </Link>
                         </SidebarMenuButton>
                     </SidebarMenuItem>
