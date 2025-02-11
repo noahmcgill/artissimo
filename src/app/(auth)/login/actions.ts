@@ -55,6 +55,10 @@ export async function login(
             name: metadata?.name ?? "",
             role: metadata?.role ?? "",
         }),
+        {
+            sameSite: "lax",
+            maxAge: user.session.expires_at,
+        },
     );
 
     revalidatePath("/", "layout");
