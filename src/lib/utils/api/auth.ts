@@ -2,7 +2,8 @@ import { TRPCError } from "@trpc/server";
 import { createClient } from "../supabase/server";
 import { TRPCErrorCode } from "@/lib/constants";
 
-export const verifyAuth = async (email: string) => {
+// Throws if the user is trying to modify a resource they are not the owner of
+export const throwIfNotOwnedResource = async (email: string) => {
     const supabase = await createClient();
     const { data, error } = await supabase.auth.getUser();
     if (error) {
