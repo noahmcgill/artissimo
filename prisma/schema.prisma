@@ -23,9 +23,15 @@ enum CourseAccessRole {
   GUEST
 }
 
+enum InvitationStatus {
+  PENDING
+  ACCEPTED
+  DECLINED
+}
+
 model User {
   id         String   @id @default(uuid())
-  role       UserRole @default(STUDENT)
+  role       UserRole @default(GUEST)
   email      String   @unique
   name       String
   createdAt  DateTime @default(now())
@@ -33,6 +39,18 @@ model User {
   
   UserCourseAccess UserCourseAccess[]
   ChapterAuthors   ChapterAuthor[]
+}
+
+model Invitation {
+  id          String           @id @default(uuid())
+  email       String
+  courseId    String
+  course      Course           @relation(fields: [courseId], references: [id])
+  role        UserRole         @default(GUEST)
+  status      InvitationStatus @default(PENDING)
+  createdAt   DateTime         @default(now())
+
+  @@unique([email, courseId])
 }
 
 model Course {
@@ -46,9 +64,10 @@ model Course {
   bookId      String?  @unique
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
-
   book             Book?          @relation(fields: [bookId], references: [id])
+  
   UserCourseAccess UserCourseAccess[]
+  Invitations      Invitation[]
 }
 
 model UserCourseAccess {

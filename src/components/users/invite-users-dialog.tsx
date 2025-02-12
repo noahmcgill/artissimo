@@ -91,13 +91,13 @@ export const InviteUsersDialog = () => {
                             label="Role"
                             items={roles}
                             placeholder="Select role"
-                            info="Select what role each invited user will be added as."
+                            info="Select the role invited users will be added as."
                         />
                         <ArtissimoSelect
                             label="Course"
                             items={dummyCourses}
                             placeholder="Select course"
-                            info="Select what course each invited user will be given access to."
+                            info="Select the course invited users will be given access to."
                         />
                     </div>
                 </div>
