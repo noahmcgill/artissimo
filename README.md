@@ -51,7 +51,7 @@ Artissimo was designed to host learning content in a book-based structure. Below
 
 ### Data Models
 
-Below is a diagram of the database models (created using[dbdiagram.io](https://dbdiagram.io/)):
+Below is a diagram of the database models (created using [dbdiagram.io](https://dbdiagram.io/)):
 
 ![Artissimo data models](./public/data-models.png "Artissimo Data Models")
 

@@ -8,6 +8,7 @@ import { login } from "@/app/(auth)/login/actions";
 import { useToast } from "@/lib/hooks/use-toast";
 import { useState } from "react";
 import { Loader2 } from "lucide-react";
+import { ArtissimoInput } from "../inputs/input";
 
 export function LoginForm({
     className,
@@ -44,18 +45,16 @@ export function LoginForm({
                     Enter your email below to login to your account
                 </p>
             </div>
-            <div className="grid gap-6">
-                <div className="grid gap-2">
-                    <Label htmlFor="email">Email</Label>
-                    <Input
-                        id="email"
-                        type="email"
-                        name="email"
-                        placeholder="your.name@company.com"
-                        required
-                    />
-                </div>
-                <div className="grid gap-2">
+            <div className="flex flex-col gap-6">
+                <ArtissimoInput
+                    label="Email"
+                    id="email"
+                    type="email"
+                    name="email"
+                    placeholder="your.name@company.com"
+                    required
+                />
+                <div className="flex flex-col gap-2">
                     <div className="flex items-center">
                         <Label htmlFor="password">Password</Label>
                         <a
@@ -74,7 +73,12 @@ export function LoginForm({
                         required
                     />
                 </div>
-                <Button type="submit" className="w-full" disabled={isLoading}>
+                <Button
+                    type="submit"
+                    className="w-full"
+                    variant="primary"
+                    disabled={isLoading}
+                >
                     {isLoading && <Loader2 className="animate-spin" />}
                     Login
                 </Button>
