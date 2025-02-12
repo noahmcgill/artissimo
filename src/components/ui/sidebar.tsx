@@ -18,6 +18,7 @@ import {
     TooltipProvider,
     TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { usePathname } from "next/navigation";
 
 const SIDEBAR_COOKIE_NAME = "sidebar:state";
 const SIDEBAR_COOKIE_MAX_AGE = 60 * 60 * 24 * 7;
@@ -558,6 +559,7 @@ const SidebarMenuButton = React.forwardRef<
         asChild?: boolean;
         isActive?: boolean;
         tooltip?: string | React.ComponentProps<typeof TooltipContent>;
+        href?: string;
     } & VariantProps<typeof sidebarMenuButtonVariants>
 >(
     (
@@ -568,12 +570,14 @@ const SidebarMenuButton = React.forwardRef<
             size = "default",
             tooltip,
             className,
+            href,
             ...props
         },
         ref,
     ) => {
         const Comp = asChild ? Slot : "button";
         const { isMobile, state } = useSidebar();
+        const pathname = usePathname();
 
         const button = (
             <Comp
@@ -584,6 +588,9 @@ const SidebarMenuButton = React.forwardRef<
                 className={cn(
                     sidebarMenuButtonVariants({ variant, size }),
                     className,
+                    href && pathname.includes(href)
+                        ? "bg-sidebar-accent"
+                        : "bg-sidebar-primary-foreground",
                 )}
                 {...props}
             />

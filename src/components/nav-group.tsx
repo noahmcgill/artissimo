@@ -27,18 +27,25 @@ export const NavGroup: React.FC<NavGroupProps> = ({ title, items }) => {
         <SidebarGroup>
             {title && <SidebarGroupLabel>{title}</SidebarGroupLabel>}
             <SidebarMenu>
-                {items.map((item) => (
-                    <SidebarMenuItem key={item.title}>
-                        <SidebarMenuButton tooltip={item.title} asChild>
-                            <Link href={`/b${item.url}`}>
-                                {item.icon && <item.icon />}
-                                <span className="text-medium">
-                                    {item.title}
-                                </span>
-                            </Link>
-                        </SidebarMenuButton>
-                    </SidebarMenuItem>
-                ))}
+                {items.map((item) => {
+                    const href = `/dash${item.url}`;
+                    return (
+                        <SidebarMenuItem key={item.title}>
+                            <SidebarMenuButton
+                                tooltip={item.title}
+                                href={href}
+                                asChild
+                            >
+                                <Link href={href}>
+                                    {item.icon && <item.icon />}
+                                    <span className="text-medium">
+                                        {item.title}
+                                    </span>
+                                </Link>
+                            </SidebarMenuButton>
+                        </SidebarMenuItem>
+                    );
+                })}
             </SidebarMenu>
         </SidebarGroup>
     );

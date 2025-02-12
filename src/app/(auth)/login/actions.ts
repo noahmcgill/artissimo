@@ -62,7 +62,7 @@ export async function login(
     );
 
     revalidatePath("/", "layout");
-    redirect("/b");
+    redirect("/dash");
 }
 
 export async function logout() {

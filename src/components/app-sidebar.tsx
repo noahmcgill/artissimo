@@ -12,9 +12,8 @@ import {
 } from "@/components/ui/sidebar";
 import { NavGroup } from "./nav-group";
 import { NavUser } from "./nav-user";
-import { TfiBlackboard } from "react-icons/tfi";
 import { TbBrandNeteaseMusic } from "react-icons/tb";
-import { LuCircleHelp, LuUsers } from "react-icons/lu";
+import { LuApple, LuBookOpen, LuCircleHelp, LuUsers } from "react-icons/lu";
 import { type ArtissimoUser } from "@/lib/types/user";
 
 const data = {
@@ -23,7 +22,12 @@ const data = {
             {
                 title: "Courses",
                 url: "/courses",
-                icon: TfiBlackboard,
+                icon: LuApple,
+            },
+            {
+                title: "Books",
+                url: "/books",
+                icon: LuBookOpen,
             },
             {
                 title: "Users",

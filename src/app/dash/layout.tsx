@@ -21,7 +21,7 @@ export default async function DashboardLayout({
     return (
         <SidebarProvider>
             <AppSidebar user={user} />
-            <div className="flex w-full flex-col p-4 pt-0 md:pt-4">
+            <div className="flex w-full flex-col p-6 pt-0 md:pt-4">
                 <div className="flex w-full flex-row justify-between py-4 md:py-0">
                     <div className="block md:hidden">logo</div>
                     <SidebarTrigger className="flex md:hidden" />
