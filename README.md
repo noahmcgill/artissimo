@@ -1,4 +1,4 @@
-## Artissimo - An LMS
+## Artissimo - A LMS
 
 Artissimo is a custom learning management system built for the University of South Carolina School of Music.
 
