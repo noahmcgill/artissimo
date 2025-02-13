@@ -16,7 +16,7 @@ export const userRouter = createTRPCRouter({
             return await userService.getByEmail(input.email);
         }),
 
-    beginInvitationProcessing: publicProcedure
+    createBatchInvitationRequest: publicProcedure
         .input(
             z.object({
                 emails: z.array(z.string()),
@@ -27,7 +27,7 @@ export const userRouter = createTRPCRouter({
         .mutation(async ({ input }) => {
             await throwIfNotAdmin();
 
-            return await userService.beginInvitationProcessing(
+            return await userService.createBatchInvitationRequest(
                 input.emails,
                 input.courseId,
                 input.role,
@@ -35,11 +35,11 @@ export const userRouter = createTRPCRouter({
         }),
 
     // @leftoff: if not batch requester, return forbidden?
-    getBatchInvitationStatus: publicProcedure
+    getBatchInvitationRequestStatus: publicProcedure
         .input(z.object({ id: z.string().uuid() }))
         .query(async ({ input }) => {
             await throwIfNotAdmin();
 
-            return await userService.getBatchInvitationStatus(input.id);
+            return await userService.getBatchInvitationRequestStatus(input.id);
         }),
 });

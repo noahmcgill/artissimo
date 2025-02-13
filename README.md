@@ -9,7 +9,7 @@ Artissimo is a custom learning management system built for the University of Sou
 - [Tailwind](https://tailwindcss.com/) – CSS
 - [shadcn/ui](https://ui.shadcn.com) - UI Components
 - [PostgreSQL](https://www.postgresql.org/) - Database
-- [Upstash](https://upstash.com)(QStash) - Serverless messaging solution
+- [Upstash](https://upstash.com) (QStash) - Asynchronous Messaging
 - [Prisma](https://prisma.io) - ORM [![Made with Prisma](https://made-with.prisma.io/dark.svg)](https://prisma.io)
 - [Supabase](https://supabase.co/) – Authentication 
 

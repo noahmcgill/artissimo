@@ -1,5 +1,6 @@
 import { TRPCErrorCode } from "@/lib/constants";
 import { db } from "@/server/db";
+import { type Course } from "@prisma/client";
 import { TRPCError } from "@trpc/server";
 
 export class CourseService {
@@ -13,7 +14,7 @@ export class CourseService {
     }
 
     // @todo: make sure the user has access to the course
-    async getCourseById(id: string) {
+    async getCourseById(id: string): Promise<Course> {
         const course = await db.course.findUnique({
             where: { id },
         });

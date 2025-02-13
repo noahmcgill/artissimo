@@ -44,23 +44,27 @@ model User {
   
   UserCourseAccess UserCourseAccess[]
   ChapterAuthors   ChapterAuthor[]
+  Invitations      Invitation[]
 }
 
 model Invitation {
-  id          String           @id @default(uuid())
-  email       String
-  courseId    String
-  course      Course           @relation(fields: [courseId], references: [id])
-  role        UserRole         @default(GUEST)
-  status      InvitationStatus @default(PENDING)
-  createdAt   DateTime         @default(now())
+  id             String           @id @default(uuid())
+  email          String
+  courseId       String
+  course         Course           @relation(fields: [courseId], references: [id])
+  invitedById    String
+  invitedByUser  User             @relation(fields: [invitedById], references: [id])
+  role           UserRole         @default(GUEST)
+  status         InvitationStatus @default(PENDING)
+  createdAt      DateTime         @default(now())
 
   @@unique([email, courseId])
 }
 
-model BatchInvitationCreation {
+model BatchInvitationRequest {
   id          String                        @id @default(uuid())
   status      BatchInvitationCreationStatus @default(PENDING)
+  errors      Json                          @default("[]")
   createdAt   DateTime                      @default(now())
 }
 
