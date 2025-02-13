@@ -1,7 +1,8 @@
-import { TRPCErrorCode } from "@/lib/constants";
-import { createClient } from "@/lib/utils/supabase/server";
+import { baseUrl, TRPCErrorCode } from "@/lib/constants";
+import { dedupArray } from "@/lib/utils/array";
+import { Client } from "@upstash/qstash";
 import { db } from "@/server/db";
-import { type Prisma, type UserRole } from "@prisma/client";
+import { type UserRole } from "@prisma/client";
 import { TRPCError } from "@trpc/server";
 
 export class UserService {
@@ -30,59 +31,68 @@ export class UserService {
         return user;
     }
 
-    async inviteUsers(
-        initialEmails: string[],
+    async beginInvitationProcessing(
+        emails: string[],
         courseId: string,
         role: UserRole,
     ) {
-        // remaining unaccounted-for edge cases:
-        // - supabase calls succeed but db transaction fails
-        // - user has already been invited to a course
+        /**
+         * Steps to process async (3 endpoints)
+         * A. SEND (TRPC)
+         *   1. Remove duplicate emails (verify duplicate emails in input on frontend and skip on backend)
+         *   2. Create an BatchInvitationResponse in the database (includes state)
+         *   3. Call QStash with the emails and the BatchInvitationResponse ID
+         *   4. Return ID of BatchInvitationResponse to client
+         * B. PROCESS (API ROUTE)
+         *   1. Create users in Supabase
+         *   2. Create users in Database
+         *   3. If any errors, add them to the BatchInvitationResponse
+         *   4. Update status of the BatchInvitationResponse
+         * C. POLL (TRPC)
+         *   1. Client polls this endpoint with the BatchInvitationResponse ID to check the status
+         */
 
-        // @todo - think about making async and how that would work
-        // @todo - think about retry between supabase and db transaction
+        const qstash = new Client({ token: process.env.QSTASH_TOKEN! });
 
-        const supabase = await createClient();
-        const errors: Record<string, unknown> = {};
+        // remove duplicate emails
+        const emailsLower = emails.map((email) => email.toLowerCase());
+        const finalEmails = dedupArray(emailsLower);
 
-        // remove duplicates
-        const emailsLower = initialEmails.map((email) => email.toLowerCase());
-        const filteredEmails = new Set(emailsLower);
-        const emails = [...filteredEmails];
+        // create batch invitation creation record
+        const dbRes = await db.batchInvitationCreation.create({});
 
-        const invitations: Prisma.InvitationCreateManyInput[] = [];
-
-        // Create users in supabase and prepare db transaction
-        for (const email of emails) {
-            const { data, error } =
-                await supabase.auth.admin.inviteUserByEmail(email);
-
-            if (error) {
-                errors[email] = error.code;
-                continue;
-            }
-
-            // @todo: edge case where user has already been invited to the course
-
-            invitations.push({
-                id: data.user.id,
-                email,
+        // send off this request for async processing
+        await qstash.publishJSON({
+            url: `${baseUrl}/invitations`,
+            body: {
+                emails: finalEmails,
                 role,
                 courseId,
-            });
-        }
-
-        // Add users to db
-        const res = await db.invitation.createMany({
-            data: invitations,
+                batchId: dbRes.id,
+            },
         });
 
         return {
-            data: {
-                createdCount: res.count,
-                emails: invitations.map((invitation) => invitation.email),
-            },
-            errors,
+            batchId: dbRes.id,
+        };
+    }
+
+    async getBatchInvitationStatus(id: string) {
+        const batch = await db.batchInvitationCreation.findUnique({
+            where: { id },
+        });
+
+        if (!batch) {
+            throw new TRPCError({
+                code: TRPCErrorCode.NOT_FOUND,
+                message: "The requested batch was not found",
+            });
+        }
+
+        return {
+            id: batch.id,
+            // @leftoff: need to return any errors, which means we need to save them in objects
+            status: batch.status,
         };
     }
 }

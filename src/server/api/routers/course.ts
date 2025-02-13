@@ -6,7 +6,7 @@ import { CourseService } from "../services/course";
 
 const courseService = new CourseService();
 
-export const userRouter = createTRPCRouter({
+export const courseRouter = createTRPCRouter({
     getByEmail: publicProcedure
         .input(z.object({ id: z.string().uuid() }))
         .mutation(async ({ input }) => {

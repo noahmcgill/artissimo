@@ -9,6 +9,7 @@ Artissimo is a custom learning management system built for the University of Sou
 - [Tailwind](https://tailwindcss.com/) – CSS
 - [shadcn/ui](https://ui.shadcn.com) - UI Components
 - [PostgreSQL](https://www.postgresql.org/) - Database
+- [Upstash](https://upstash.com)(QStash) - Serverless messaging solution
 - [Prisma](https://prisma.io) - ORM [![Made with Prisma](https://made-with.prisma.io/dark.svg)](https://prisma.io)
 - [Supabase](https://supabase.co/) – Authentication 
 
@@ -33,7 +34,20 @@ NEXT_PUBLIC_SUPABASE_URL=""
 NEXT_PUBLIC_SUPABASE_ANON_KEY=""
 ```
 
-These values can be found in the Supabase console.
+These values can be found in the Supabase console. Next, add your QStash secrets to the `.env` file, which can be found in the Upstash console:
+
+```
+QSTASH_URL=""
+QSTASH_TOKEN=""
+QSTASH_CURRENT_SIGNING_KEY=""
+QSTASH_NEXT_SIGNING_KEY=""
+```
+
+Also, you'll need to add your server's base URL to the `.env` file as well (**without the trailing "/"**):
+
+```
+NEXT_PUBLIC_BASE_URL=""
+```
 
 Finally, seed an admin user in the database:
 
@@ -42,6 +56,20 @@ npm run db:seed -- --email "<email>" --name "<name>" --password "<password>"
 ```
 
 This should only be done once. To create new users, login with the seeded user and create additional users in the UI. After running this step, you'll need to login to your inbox and confirm your email via a link Supabase will send you.
+
+### Running in development
+
+Start the QStash (Upstash) development server:
+
+```bash
+npx @upstash/qstash-cli dev
+```
+
+Start the Next.js development server:
+
+```bash
+npm run dev
+```
 
 ### Core Concepts
 

@@ -7,3 +7,6 @@ export enum TRPCErrorCode {
     UNAUTHORIZED = "UNAUTHORIZED",
     BAD_REQUEST = "BAD_REQUEST",
 }
+
+export const baseUrl =
+    process.env.NEXT_PUBLIC_BASE_URL ?? "http://localhost:3000";
