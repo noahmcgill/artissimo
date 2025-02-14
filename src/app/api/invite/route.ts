@@ -8,9 +8,9 @@ import { z } from "zod";
 export interface InviteRequestBody {
     emails: string[];
     role: UserRole;
-    courseId: string;
     batchId: string;
     invitedById: string;
+    courseId?: string;
 }
 
 export async function POST(request: NextRequest) {
@@ -35,13 +35,7 @@ export async function POST(request: NextRequest) {
         );
     }
 
-    const body = (await request.json()) as {
-        emails: string[];
-        role: UserRole;
-        courseId: string;
-        batchId: string;
-        invitedById: string;
-    };
+    const body = (await request.json()) as InviteRequestBody;
 
     const invitations: Prisma.InvitationCreateManyInput[] = [];
     const errors: Record<string, unknown> = {};
@@ -56,6 +50,7 @@ export async function POST(request: NextRequest) {
         }
 
         // @todo: edge case where user has already been invited to the course
+        // @todo: roll back user creation if transaction fails?
 
         invitations.push({
             id: data.user.id,
@@ -76,9 +71,9 @@ export async function POST(request: NextRequest) {
         console.error(e);
         return json(
             {
-                code: "invalid_request_body",
+                code: "unexpected_error",
             },
-            400,
+            500,
         );
     }
 }

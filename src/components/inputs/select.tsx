@@ -16,17 +16,21 @@ interface SelectItem {
 }
 
 interface ArtissimoSelectProps {
+    name?: string;
     label: string;
     placeholder: string;
     items: SelectItem[];
     info?: string;
+    onValueChange?: (value: string) => void;
 }
 
 export const ArtissimoSelect: React.FC<ArtissimoSelectProps> = ({
+    name,
     items,
     label,
     placeholder,
     info,
+    onValueChange,
 }) => {
     return (
         <div className="flex flex-col">
@@ -36,7 +40,7 @@ export const ArtissimoSelect: React.FC<ArtissimoSelectProps> = ({
                 </Label>
                 {info && <InfoTooltip content={info} />}
             </div>
-            <ShadSelect>
+            <ShadSelect onValueChange={onValueChange} name={name}>
                 <SelectTrigger id={label}>
                     <SelectValue placeholder={placeholder} />
                 </SelectTrigger>

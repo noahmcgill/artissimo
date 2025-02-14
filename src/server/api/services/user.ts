@@ -1,4 +1,4 @@
-import { baseUrl, TRPCErrorCode } from "@/lib/constants";
+import { baseUrl } from "@/lib/constants";
 import { dedupArray } from "@/lib/utils/array";
 import { Client } from "@upstash/qstash";
 import { db } from "@/server/db";
@@ -7,7 +7,6 @@ import {
     type User,
     type UserRole,
 } from "@prisma/client";
-import { TRPCError } from "@trpc/server";
 import { createClient } from "@/lib/utils/supabase/server";
 import { type InviteRequestBody } from "@/app/api/invite/route";
 import { type JsonValue } from "@prisma/client/runtime/library";
@@ -28,26 +27,16 @@ export class UserService {
         return UserService.instance;
     }
 
-    async getByEmail(email: string): Promise<User> {
-        const user = await db.user.findUnique({
+    async getByEmail(email: string): Promise<User | null> {
+        return await db.user.findUnique({
             where: { email },
         });
-
-        if (!user) {
-            throw new TRPCError({
-                // If no user is found, something has gone wrong on our end
-                code: TRPCErrorCode.INTERNAL_SERVER_ERROR,
-                message: "The requested user was not found",
-            });
-        }
-
-        return user;
     }
 
     async createBatchInvitationRequest(
         emails: string[],
-        courseId: string,
         role: UserRole,
+        courseId?: string,
     ) {
         const qstash = new Client({ token: process.env.QSTASH_TOKEN! });
         const supabase = await createClient();
@@ -64,9 +53,9 @@ export class UserService {
         const body: InviteRequestBody = {
             emails: finalEmails,
             role,
-            courseId,
             batchId: dbRes.id,
             invitedById: invitedBy.data.user?.id ?? "",
+            courseId,
         };
         await qstash.publishJSON({
             url: `${baseUrl}/invite`,
@@ -80,16 +69,13 @@ export class UserService {
 
     async getBatchInvitationRequestStatus(
         id: string,
-    ): Promise<GetBatchInvitationRequestStatusRes> {
+    ): Promise<GetBatchInvitationRequestStatusRes | null> {
         const batch = await db.batchInvitationRequest.findUnique({
             where: { id },
         });
 
         if (!batch) {
-            throw new TRPCError({
-                code: TRPCErrorCode.NOT_FOUND,
-                message: "The requested batch was not found",
-            });
+            return null;
         }
 
         return {

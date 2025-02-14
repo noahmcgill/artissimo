@@ -50,8 +50,8 @@ model User {
 model Invitation {
   id             String           @id @default(uuid())
   email          String
-  courseId       String
-  course         Course           @relation(fields: [courseId], references: [id])
+  courseId       String?
+  course         Course?          @relation(fields: [courseId], references: [id])
   invitedById    String
   invitedByUser  User             @relation(fields: [invitedById], references: [id])
   role           UserRole         @default(GUEST)

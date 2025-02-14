@@ -7,7 +7,6 @@ import {
     DialogClose,
     DialogContent,
     DialogDescription,
-    DialogFooter,
     DialogHeader,
     DialogTitle,
     DialogTrigger,
@@ -17,39 +16,66 @@ import { Textarea } from "../ui/textarea";
 import { useEffect, useState } from "react";
 import { InfoTooltip } from "../info-tooltip";
 import { ArtissimoSelect } from "../inputs/select";
-
-const dummyCourses = [
-    {
-        label: "MUSC-598",
-        value: "musc-598",
-    },
-    {
-        label: "MUSC-590",
-        value: "musc-590",
-    },
-];
+import { UserRole, type Course } from "@prisma/client";
+import { useHydrateAtoms } from "jotai/utils";
+import { coursesAtom } from "@/store";
+import { useAtomValue } from "jotai";
+import { Alert, AlertDescription, AlertTitle } from "../ui/alert";
+import { AlertCircle, Loader2 } from "lucide-react";
+import { invite } from "@/app/dash/users/actions";
+import { useToast } from "@/hooks/use-toast";
 
 const roles = [
     {
         label: "Guest",
-        value: "guest",
+        value: "GUEST",
     },
     {
         label: "Student",
-        value: "student",
+        value: "STUDENT",
     },
     {
         label: "Instructor",
-        value: "instructor",
+        value: "INSTRUCTOR",
     },
     {
         label: "Admin",
-        value: "admin",
+        value: "ADMIN",
     },
 ];
 
-export const InviteUsersDialog = () => {
+interface InviteUsersDialogProps {
+    ssrCourses: Course[];
+}
+
+export const InviteUsersDialog: React.FC<InviteUsersDialogProps> = ({
+    ssrCourses,
+}) => {
+    useHydrateAtoms([[coursesAtom, ssrCourses]]);
+
     const [placeholder, setPlaceholder] = useState<string>("");
+    const [controlledValue, setControlledValue] = useState<string>("");
+    const [isLoading, setIsLoading] = useState<boolean>(false);
+
+    const courses = useAtomValue(coursesAtom);
+    const { toast } = useToast();
+
+    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        setIsLoading(true);
+        const formData = new FormData(e.currentTarget);
+
+        const { error } = await invite(formData);
+        if (error) {
+            toast({
+                title: "Error",
+                description: error,
+                variant: "destructive",
+            });
+        }
+        setIsLoading(false);
+    };
+
     useEffect(() => {
         setPlaceholder("email.one@example.com \nemail.two@example.com");
     }, []);
@@ -68,12 +94,12 @@ export const InviteUsersDialog = () => {
                 }}
             >
                 <DialogHeader>
-                    <DialogTitle>Let's add some users!</DialogTitle>
+                    <DialogTitle>Let&apos;s add some users!</DialogTitle>
                     <DialogDescription>
                         You can invite one or more users by email.
                     </DialogDescription>
                 </DialogHeader>
-                <div className="flex flex-col gap-2">
+                <form className="flex flex-col gap-2" onSubmit={handleSubmit}>
                     <div className="flex flex-col">
                         <div className="flex flex-row items-center gap-0">
                             <Label htmlFor="emails">Email addresses</Label>
@@ -88,25 +114,54 @@ export const InviteUsersDialog = () => {
                     </div>
                     <div className="flex w-[260px] flex-col gap-2">
                         <ArtissimoSelect
+                            name="role"
                             label="Role"
                             items={roles}
                             placeholder="Select role"
                             info="Select the role invited users will be added as."
+                            onValueChange={setControlledValue}
                         />
-                        <ArtissimoSelect
-                            label="Course"
-                            items={dummyCourses}
-                            placeholder="Select course"
-                            info="Select the course invited users will be given access to."
-                        />
+                        {controlledValue !== UserRole.ADMIN && (
+                            <ArtissimoSelect
+                                name="courseId"
+                                label="Course"
+                                items={courses.map((course) => {
+                                    return {
+                                        label: course.title,
+                                        value: course.id,
+                                    };
+                                })}
+                                placeholder="Select course"
+                                info="Select the course invited users will be given access to."
+                            />
+                        )}
                     </div>
-                </div>
-                <DialogFooter className="justify-end">
-                    <DialogClose asChild>
-                        <Button variant="outline">Cancel</Button>
-                    </DialogClose>
-                    <Button variant="primary">Invite</Button>
-                </DialogFooter>
+                    {controlledValue === UserRole.ADMIN && (
+                        <Alert variant="warning">
+                            <AlertCircle className="h-4 w-4" />
+                            <AlertTitle>Proceed with Caution!</AlertTitle>
+                            <AlertDescription>
+                                Selecting the <b>ADMIN</b> role gives a user
+                                full access to the system, including destructive
+                                actions like deleting and editing books,
+                                chapters, and other users.
+                            </AlertDescription>
+                        </Alert>
+                    )}
+                    <div className="mt-4 flex w-full justify-end gap-2">
+                        <DialogClose asChild>
+                            <Button variant="outline">Cancel</Button>
+                        </DialogClose>
+                        <Button
+                            variant="primary"
+                            disabled={isLoading}
+                            type="submit"
+                        >
+                            {isLoading && <Loader2 className="animate-spin" />}
+                            Invite
+                        </Button>
+                    </div>
+                </form>
             </DialogContent>
         </Dialog>
     );

@@ -1,17 +1,23 @@
-import { z } from "zod";
-
 import { createTRPCRouter, publicProcedure } from "@/server/api/trpc";
 import { throwIfNotAdmin } from "@/lib/utils/api/auth";
 import { CourseService } from "../services/course";
+import { TRPCError } from "@trpc/server";
+import { TRPCErrorCode } from "@/lib/constants";
 
 const courseService = new CourseService();
 
 export const courseRouter = createTRPCRouter({
-    getByEmail: publicProcedure
-        .input(z.object({ id: z.string().uuid() }))
-        .mutation(async ({ input }) => {
-            await throwIfNotAdmin();
+    adminGetCourses: publicProcedure.mutation(async () => {
+        await throwIfNotAdmin();
 
-            return await courseService.getCourseById(input.id);
-        }),
+        try {
+            return await courseService.adminGetCourses();
+        } catch (e) {
+            console.error(e);
+            throw new TRPCError({
+                code: TRPCErrorCode.NOT_FOUND,
+                message: "There was an error retrieving the course",
+            });
+        }
+    }),
 });
