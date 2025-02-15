@@ -13,8 +13,8 @@ export const config = {
          * - _next/image (image optimization files)
          * - favicon.ico (favicon file)
          * - forgot-password (forgot password page)
-         * Feel free to modify this pattern to include more paths.
+         * - api/invite (QStash queue calls - authorization occurs in endpoint)
          */
-        "/((?!_next/static|_next/image|favicon.ico|forgot-password|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)",
+        "/((?!_next/static|_next/image|favicon.ico|forgot-password|api/invite|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)",
     ],
 };

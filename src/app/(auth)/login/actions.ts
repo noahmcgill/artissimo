@@ -1,7 +1,7 @@
 "use server";
 
 import { USER_METADATA_COOKIES_KEY } from "@/lib/constants";
-import { createClient } from "@/lib/utils/supabase/server";
+import { auth } from "@/lib/utils/supabase/server";
 import { api } from "@/trpc/server";
 import { revalidatePath } from "next/cache";
 import { cookies } from "next/headers";
@@ -11,8 +11,6 @@ import { z } from "zod";
 export async function login(
     formData: FormData,
 ): Promise<{ error: string | null }> {
-    const supabase = await createClient();
-
     const data = {
         email: formData.get("email") as string,
         password: formData.get("password") as string,
@@ -34,7 +32,7 @@ export async function login(
         return { error: "Please enter a valid password." };
     }
 
-    const { data: user, error } = await supabase.auth.signInWithPassword(data);
+    const { data: user, error } = await auth.signInWithPassword(data);
 
     if (error) {
         // @todo: more robust error handling
@@ -66,10 +64,8 @@ export async function login(
 }
 
 export async function logout() {
-    const supabase = await createClient();
-
     // @todo: handle error
-    await supabase.auth.signOut();
+    await auth.signOut();
 
     const cookieStore = await cookies();
     cookieStore.delete(USER_METADATA_COOKIES_KEY);

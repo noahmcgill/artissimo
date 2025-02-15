@@ -1,8 +1,8 @@
-import { createClient } from "@/lib/utils/supabase/server";
+import { auth } from "@/lib/utils/supabase/server";
 import { type EmailOtpType } from "@supabase/supabase-js";
 import { type NextRequest, NextResponse } from "next/server";
 
-export async function GET(request: NextRequest) {
+export const GET = async (request: NextRequest) => {
     const { searchParams } = new URL(request.url);
     const token_hash = searchParams.get("token_hash");
     const type = searchParams.get("type") as EmailOtpType | null;
@@ -11,9 +11,7 @@ export async function GET(request: NextRequest) {
     redirectTo.pathname = next;
 
     if (token_hash && type) {
-        const supabase = await createClient();
-
-        const { error } = await supabase.auth.verifyOtp({
+        const { error } = await auth.verifyOtp({
             type,
             token_hash,
         });
@@ -25,4 +23,4 @@ export async function GET(request: NextRequest) {
     // return the user to an error page with some instructions
     redirectTo.pathname = "/auth/auth-code-error";
     return NextResponse.redirect(redirectTo);
-}
+};

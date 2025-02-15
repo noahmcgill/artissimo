@@ -1,13 +1,12 @@
 import { TRPCError } from "@trpc/server";
-import { createClient } from "../supabase/server";
+import { auth } from "../supabase/server";
 import { TRPCErrorCode } from "@/lib/constants";
 import { UserService } from "@/server/api/services/user";
 import { UserRole } from "@prisma/client";
 
 // Throws if the user is trying to modify a resource they are not the owner of
 export const throwIfNotOwnedResource = async (email: string) => {
-    const supabase = await createClient();
-    const { data, error } = await supabase.auth.getUser();
+    const { data, error } = await auth.getUser();
     if (error) {
         throw new TRPCError({
             code: TRPCErrorCode.INTERNAL_SERVER_ERROR,
@@ -26,10 +25,9 @@ export const throwIfNotOwnedResource = async (email: string) => {
 
 // Throws if the authenticated user's role is not ADMIN
 export const throwIfNotAdmin = async () => {
-    const supabase = await createClient();
     const userService = new UserService();
 
-    const { data, error } = await supabase.auth.getUser();
+    const { data, error } = await auth.getUser();
     if (error) {
         if (error.code === "user_not_found") {
             throw new TRPCError({
@@ -45,8 +43,9 @@ export const throwIfNotAdmin = async () => {
     }
 
     const metadata = await userService.getByEmail(data.user.email ?? "");
+    // @todo: null check
 
-    if (metadata.role !== UserRole.ADMIN) {
+    if (metadata?.role !== UserRole.ADMIN) {
         throw new TRPCError({
             code: TRPCErrorCode.FORBIDDEN,
             message:

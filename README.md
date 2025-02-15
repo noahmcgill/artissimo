@@ -1,8 +1,8 @@
-## Artissimo - A LMS
+# Artissimo - A Learning Management System
 
-Artissimo is a custom learning management system built for the University of South Carolina School of Music.
+Artissimo is a book-based learning management system. A closed-source version was  built for and is currently in-use by the University of South Carolina School of Music's Choral Program. This is an open-source rewrite of that version.
 
-### Tech Stack
+## Tech Stack
 
 - [Next.js](https://nextjs.org/) – Framework
 - [TypeScript](https://www.typescriptlang.org/) – Language
@@ -13,59 +13,76 @@ Artissimo is a custom learning management system built for the University of Sou
 - [Prisma](https://prisma.io) - ORM [![Made with Prisma](https://made-with.prisma.io/dark.svg)](https://prisma.io)
 - [Supabase](https://supabase.co/) – Authentication 
 
-### Getting Started
+## Getting Started
 
-Run the following command to install project dependencies:
+### Prerequisites
+
+Here's what you need to run Artissimo:
+
+* Node.js (version >= 20.0.0)
+* PostgreSQL Database
+* Supabase Project (for authentication)
+* Upstash Project (for handling long-running processes with QStash)
+
+### Clone the repository
+
+```bash
+git clone https://github.com/noahmcgill/artissimo.git
+```
+
+### Install dependencies
 
 ```bash
 npm install
 ```
 
-Next, create a `.env` file in the root directory and add your PostgreSQL instance's connection string:
+### Provide the environment variables
 
-```
-DATABASE_URL=""
-```
+Copy the sample environment variable file to `.env`:
 
-Next, create a Supabase instance and add the following connection variables to wire up authentication:
-
-```
-NEXT_PUBLIC_SUPABASE_URL=""
-NEXT_PUBLIC_SUPABASE_ANON_KEY=""
+```bash
+cp .env.example .env
 ```
 
-These values can be found in the Supabase console. Next, add your QStash secrets to the `.env` file, which can be found in the Upstash console:
+Provide the following environment variables:
 
-```
-QSTASH_URL=""
-QSTASH_TOKEN=""
-QSTASH_CURRENT_SIGNING_KEY=""
-QSTASH_NEXT_SIGNING_KEY=""
+* `APP_URL`: Your Next.js server URL
+* `DATABASE_URL`: Your PostgreSQL instance connection string
+* `NEXT_PUBLIC_SUPABASE_URL`: Your Supabase project URL (found in the Supabase dashboard)
+* `NEXT_PUBLIC_SUPABASE_ANON_KEY`: Your Supabase project anonymous key (found in the Supabase dashboard)
+* `SUPABASE_SERVICE_ROLE_KEY`: Your Supabase project service role key (found in the Supabase dashboard)
+* `QSTASH_URL`: Your QStash project URL (found in the Upstash dashboard)
+* `QSTASH_TOKEN`: Your QStash project token (found in the Upstash dashboard)
+* `QSTASH_CURRENT_SIGNING_KEY`: Your QStash project signing key (found in the Upstash dashboard)
+* `QSTASH_NEXT_SIGNING_KEY`: Your QStash project Next.js signing key (found in the Upstash dashboard)
+
+**Note**: While developing locally, you must use QStash's local development server. Start the server with the following command:
+
+```bash
+npm run qstash:local
 ```
 
-Also, you'll need to add your server's base URL to the `.env` file as well (**without the trailing "/"**):
+The development server logs should then provide you local values for each required environment variable starting with `QSTASH`. These will be different from your production variables found in the Upstash dashboard.
 
-```
-NEXT_PUBLIC_BASE_URL=""
+### Start your database
+
+However you choose to do so! I use the PostgreSQL desktop app when developing locally.
+
+### Generate the Prisma client
+
+```bash
+npm run db:generate
 ```
 
-Finally, seed an admin user in the database:
+### Seed an admin user in the database
 
 ```bash
 npm run db:seed -- --email "<email>" --name "<name>" --password "<password>"
 ```
 
-This should only be done once. To create new users, login with the seeded user and create additional users in the UI. After running this step, you'll need to login to your inbox and confirm your email via a link Supabase will send you.
+**Note**: This should only be done once. To create new users, login with the seeded user and create additional users in the UI. After running this step, you'll need to login to your inbox and confirm your email via a link Supabase will send you.
 
-### Running in development
-
-Start the QStash (Upstash) development server:
-
-```bash
-npx @upstash/qstash-cli dev
-```
-
-Start the Next.js development server:
+### Run the dev server
 
 ```bash
 npm run dev

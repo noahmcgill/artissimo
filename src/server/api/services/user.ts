@@ -7,7 +7,7 @@ import {
     type User,
     type UserRole,
 } from "@prisma/client";
-import { createClient } from "@/lib/utils/supabase/server";
+import { auth } from "@/lib/utils/supabase/server";
 import { type InviteRequestBody } from "@/app/api/invite/route";
 import { type JsonValue } from "@prisma/client/runtime/library";
 
@@ -38,18 +38,18 @@ export class UserService {
         role: UserRole,
         courseId?: string,
     ) {
-        const qstash = new Client({ token: process.env.QSTASH_TOKEN! });
-        const supabase = await createClient();
+        const qstash = new Client();
 
         // remove duplicate emails
         const emailsLower = emails.map((email) => email.toLowerCase());
         const finalEmails = dedupArray(emailsLower);
 
         // create batch invitation creation request
-        const dbRes = await db.batchInvitationRequest.create({});
+        const dbRes = await db.batchInvitationRequest.create({
+            data: {},
+        });
 
-        // send off this request for async processing
-        const invitedBy = await supabase.auth.getUser();
+        const invitedBy = await auth.getUser();
         const body: InviteRequestBody = {
             emails: finalEmails,
             role,
@@ -57,9 +57,15 @@ export class UserService {
             invitedById: invitedBy.data.user?.id ?? "",
             courseId,
         };
+
+        // send off this request for async processing
+        const session = await auth.getSession();
         await qstash.publishJSON({
-            url: `${baseUrl}/invite`,
+            url: `${baseUrl}/api/invite`,
             body,
+            headers: {
+                Authorization: `Bearer ${session.data.session?.access_token}`,
+            },
         });
 
         return {

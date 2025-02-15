@@ -1,3 +1,5 @@
+import process from "process";
+
 export const USER_METADATA_COOKIES_KEY = "user.metadata";
 
 export enum TRPCErrorCode {
@@ -8,5 +10,4 @@ export enum TRPCErrorCode {
     BAD_REQUEST = "BAD_REQUEST",
 }
 
-export const baseUrl =
-    process.env.NEXT_PUBLIC_BASE_URL ?? "http://localhost:3000";
+export const baseUrl = process.env.APP_URL ?? "http://localhost:3000";

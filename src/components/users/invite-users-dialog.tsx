@@ -28,19 +28,19 @@ import { useToast } from "@/hooks/use-toast";
 const roles = [
     {
         label: "Guest",
-        value: "GUEST",
+        value: UserRole.GUEST,
     },
     {
         label: "Student",
-        value: "STUDENT",
+        value: UserRole.STUDENT,
     },
     {
         label: "Instructor",
-        value: "INSTRUCTOR",
+        value: UserRole.INSTRUCTOR,
     },
     {
         label: "Admin",
-        value: "ADMIN",
+        value: UserRole.ADMIN,
     },
 ];
 
@@ -139,7 +139,9 @@ export const InviteUsersDialog: React.FC<InviteUsersDialogProps> = ({
                     {controlledValue === UserRole.ADMIN && (
                         <Alert variant="warning">
                             <AlertCircle className="h-4 w-4" />
-                            <AlertTitle>Proceed with Caution!</AlertTitle>
+                            <AlertTitle className="text-sm">
+                                Proceed with Caution!
+                            </AlertTitle>
                             <AlertDescription>
                                 Selecting the <b>ADMIN</b> role gives a user
                                 full access to the system, including destructive
