@@ -1,5 +1,6 @@
 import { json } from "@/lib/utils/api/route";
-import { auth, authAdmin } from "@/lib/utils/supabase/server";
+import { createClient } from "@/lib/utils/supabase/server";
+import { createClient as baseCreateClient } from "@supabase/supabase-js";
 import { db } from "@/server/db";
 import {
     BatchInvitationCreationStatus,
@@ -20,8 +21,10 @@ export interface InviteRequestBody {
 }
 
 export const POST = verifySignatureAppRouter(async (request: NextRequest) => {
+    const supabase = await createClient();
+
     const jwt = request.headers.get("Authorization")?.split(" ")[1];
-    const { data: user, error } = await auth.getUser(jwt);
+    const { data: user, error } = await supabase.auth.getUser(jwt);
 
     if (error || !user) {
         console.error("Unauthorized request to invite endpoint blocked");
@@ -35,6 +38,7 @@ export const POST = verifySignatureAppRouter(async (request: NextRequest) => {
 
     const metadata = await api.user.getByEmail({
         email: user.user.email ?? "",
+        jwt,
     });
     if (metadata.role !== UserRole.ADMIN) {
         console.error(
@@ -44,7 +48,7 @@ export const POST = verifySignatureAppRouter(async (request: NextRequest) => {
             {
                 code: "forbidden",
             },
-            401,
+            403,
         );
     }
 
@@ -72,8 +76,21 @@ export const POST = verifySignatureAppRouter(async (request: NextRequest) => {
     const invitations: Prisma.InvitationCreateManyInput[] = [];
     const errors: Record<string, unknown> = {};
 
+    // We need to create an instance of the admin client to invite users
+    const supabaseAdmin = baseCreateClient(
+        process.env.NEXT_PUBLIC_SUPABASE_URL!,
+        process.env.SUPABASE_SERVICE_ROLE_KEY!,
+        {
+            auth: {
+                autoRefreshToken: false,
+                persistSession: false,
+            },
+        },
+    );
+
     for (const email of body.emails) {
-        const { data, error } = await authAdmin.inviteUserByEmail(email);
+        const { data, error } =
+            await supabaseAdmin.auth.admin.inviteUserByEmail(email);
 
         if (error) {
             errors[email] = error;

@@ -62,7 +62,7 @@ Provide the following environment variables:
 npm run qstash:local
 ```
 
-The development server logs should then provide you local values for each required environment variable starting with `QSTASH`. These will be different from your production variables found in the Upstash dashboard.
+The development server logs should then provide you local values for each required environment variable starting with `QSTASH_`. These will be different from your production variables found in the Upstash dashboard.
 
 ### Start your database
 
@@ -88,7 +88,7 @@ npm run db:seed -- --email "<email>" --name "<name>" --password "<password>"
 npm run dev
 ```
 
-### Core Concepts
+## Core Concepts
 
 Artissimo was designed to host learning content in a book-based structure. Below are definitions of some core concepts:
 
@@ -99,17 +99,17 @@ Artissimo was designed to host learning content in a book-based structure. Below
 * **Courses**: Segmented groups of users
     * A course is associated with one book, allowing users of the course to access the chapters within the book
 
-### Data Models
+## Data Models
 
 Below is a diagram of the database models (created using [dbdiagram.io](https://dbdiagram.io/)):
 
 ![Artissimo data models](./public/data-models.png "Artissimo Data Models")
 
-### Development Roadmap
+## Development Roadmap
 
 This project is currently in active development. Please check back later!
 
-#### V0
+### V0
 * Admin & Instructor Views
     * User management
     * Book / Chapter management
@@ -118,7 +118,7 @@ This project is currently in active development. Please check back later!
 * Student & Guest Views
     * Book / Chapter views
 
-#### V1
+### V1
 * Inline reflection question versioning
 * Admin & Instructor Views
     * Reflection question creation

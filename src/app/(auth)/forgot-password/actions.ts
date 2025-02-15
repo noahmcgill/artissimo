@@ -1,11 +1,13 @@
 "use server";
 
-import { auth } from "@/lib/utils/supabase/server";
+import { createClient } from "@/lib/utils/supabase/server";
 import { z } from "zod";
 
 export async function sendResetPasswordEmail(
     formData: FormData,
 ): Promise<{ error: string | null }> {
+    const supabase = await createClient();
+
     const data = {
         email: formData.get("email") as string,
     };
@@ -18,7 +20,7 @@ export async function sendResetPasswordEmail(
         return { error: "Please enter a valid email address." };
     }
 
-    const { error } = await auth.resetPasswordForEmail(data.email, {
+    const { error } = await supabase.auth.resetPasswordForEmail(data.email, {
         redirectTo: `${process.env.NEXT_PUBLIC_SITE_URL}/reset-password`,
     });
 

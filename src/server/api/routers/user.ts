@@ -11,9 +11,14 @@ const userService = new UserService();
 
 export const userRouter = createTRPCRouter({
     getByEmail: publicProcedure
-        .input(z.object({ email: z.string().email() }))
+        .input(
+            z.object({
+                email: z.string().email(),
+                jwt: z.string().jwt().optional(),
+            }),
+        )
         .mutation(async ({ input }) => {
-            await throwIfNotOwnedResource(input.email);
+            await throwIfNotOwnedResource(input.email, input.jwt);
 
             try {
                 const user = await userService.getByEmail(input.email);

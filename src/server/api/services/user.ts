@@ -7,7 +7,7 @@ import {
     type User,
     type UserRole,
 } from "@prisma/client";
-import { auth } from "@/lib/utils/supabase/server";
+import { createClient } from "@/lib/utils/supabase/server";
 import { type InviteRequestBody } from "@/app/api/invite/route";
 import { type JsonValue } from "@prisma/client/runtime/library";
 
@@ -39,6 +39,7 @@ export class UserService {
         courseId?: string,
     ) {
         const qstash = new Client();
+        const supabase = await createClient();
 
         // remove duplicate emails
         const emailsLower = emails.map((email) => email.toLowerCase());
@@ -49,7 +50,7 @@ export class UserService {
             data: {},
         });
 
-        const invitedBy = await auth.getUser();
+        const invitedBy = await supabase.auth.getUser();
         const body: InviteRequestBody = {
             emails: finalEmails,
             role,
@@ -59,7 +60,7 @@ export class UserService {
         };
 
         // send off this request for async processing
-        const session = await auth.getSession();
+        const session = await supabase.auth.getSession();
         await qstash.publishJSON({
             url: `${baseUrl}/api/invite`,
             body,
