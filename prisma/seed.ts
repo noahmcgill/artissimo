@@ -38,8 +38,8 @@ const argv = yargs(hideBin(process.argv))
     .parseSync() as unknown as Args;
 
 const supabase = createClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL ?? "",
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ?? "",
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
 );
 
 const prisma = new PrismaClient();

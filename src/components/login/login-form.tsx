@@ -6,9 +6,10 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { login } from "@/app/(auth)/login/actions";
 import { useToast } from "@/lib/hooks/use-toast";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Loader2 } from "lucide-react";
 import { ArtissimoInput } from "../inputs/input";
+import { useSupabaseSearchParams } from "@/lib/hooks/use-supabase-search-params";
 
 export function LoginForm({
     className,
@@ -16,6 +17,20 @@ export function LoginForm({
 }: React.ComponentPropsWithoutRef<"form">) {
     const { toast } = useToast();
     const [isLoading, setIsLoading] = useState<boolean>(false);
+
+    const searchParams = useSupabaseSearchParams();
+
+    useEffect(() => {
+        const errDesc = searchParams.get("error_description");
+
+        if (errDesc && errDesc !== "") {
+            toast({
+                title: "Error",
+                description: errDesc,
+                variant: "destructive",
+            });
+        }
+    }, [searchParams, toast]);
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
