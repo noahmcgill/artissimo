@@ -4,10 +4,10 @@ import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { useToast } from "@/lib/hooks/use-toast";
 import { sendResetPasswordEmail } from "@/app/(auth)/forgot-password/actions";
 import { useState } from "react";
 import { Loader2 } from "lucide-react";
+import { useToast } from "@/lib/hooks/use-toast";
 
 export function ForgotPasswordForm({
     className,
@@ -33,7 +33,7 @@ export function ForgotPasswordForm({
                 title: "Email sent",
                 description:
                     "Check your email for a link to reset your password.",
-                variant: "success",
+                variant: "success"
             });
         }
 
@@ -64,7 +64,12 @@ export function ForgotPasswordForm({
                         required
                     />
                 </div>
-                <Button type="submit" className="w-full" disabled={isLoading}>
+                <Button
+                    variant="primary"
+                    type="submit"
+                    className="w-full"
+                    disabled={isLoading}
+                >
                     {isLoading && <Loader2 className="animate-spin" />}
                     Send Email
                 </Button>

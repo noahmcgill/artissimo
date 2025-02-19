@@ -18,10 +18,8 @@ export default async function RootLayout({
     return (
         <html lang="en" className={`${GeistSans.variable}`}>
             <body>
-                <TRPCReactProvider>
-                    {children}
-                    <Toaster />
-                </TRPCReactProvider>
+                <TRPCReactProvider>{children}</TRPCReactProvider>
+                <Toaster />
             </body>
         </html>
     );

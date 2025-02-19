@@ -5,11 +5,11 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { login } from "@/app/(auth)/login/actions";
-import { useToast } from "@/lib/hooks/use-toast";
 import { useEffect, useState } from "react";
 import { Loader2 } from "lucide-react";
 import { ArtissimoInput } from "../inputs/input";
 import { useSupabaseSearchParams } from "@/lib/hooks/use-supabase-search-params";
+import { useToast } from "@/lib/hooks/use-toast";
 
 export function LoginForm({
     className,
@@ -34,6 +34,7 @@ export function LoginForm({
             toast({
                 title: "Success",
                 description: message,
+                variant: "success"
             });
         }
     }, [searchParams, toast]);

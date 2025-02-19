@@ -10,7 +10,10 @@ export default function AuthLayout({
         <div className="grid min-h-svh lg:grid-cols-2">
             <div className="flex flex-col gap-4 p-6 md:p-10">
                 <div className="flex justify-center gap-2 md:justify-start">
-                    <a href="#" className="flex items-center gap-2 font-medium">
+                    <a
+                        href="/login"
+                        className="flex items-center gap-2 font-medium"
+                    >
                         <div className="flex h-6 w-6 items-center justify-center text-primary-foreground">
                             <TbBrandNeteaseMusic className="size-6 text-red-500" />
                         </div>

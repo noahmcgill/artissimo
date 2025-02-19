@@ -23,7 +23,7 @@ import { useAtomValue } from "jotai";
 import { Alert, AlertDescription, AlertTitle } from "../ui/alert";
 import { AlertCircle, Loader2 } from "lucide-react";
 import { invite } from "@/app/dash/users/actions";
-import { useToast } from "@/hooks/use-toast";
+import { useToast } from "@/lib/hooks/use-toast";
 
 const roles = [
     {

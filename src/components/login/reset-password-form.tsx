@@ -4,10 +4,10 @@ import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { useToast } from "@/lib/hooks/use-toast";
 import { resetPassword } from "@/app/(auth)/reset-password/actions";
 import { useState } from "react";
 import { Loader2 } from "lucide-react";
+import { useToast } from "@/lib/hooks/use-toast";
 
 export function ResetPasswordForm({
     className,
@@ -45,7 +45,7 @@ export function ResetPasswordForm({
             toast({
                 title: "Success",
                 description: "Your password has been updated successfully.",
-                variant: "success",
+                variant: "success"
             });
         }
 
