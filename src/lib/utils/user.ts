@@ -10,7 +10,7 @@ export const server_getUserWithMetadata = async (): Promise<ArtissimoUser> => {
     const { data, error } = await supabase.auth.getUser();
     const metadataStr = cookieStore.get(USER_METADATA_COOKIES_KEY);
     const metadata = JSON.parse(
-        metadataStr?.value ?? "",
+        metadataStr?.value ?? "{}",
     ) as ArtissimoUserMetadata;
 
     if (error) {

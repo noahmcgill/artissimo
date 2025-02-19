@@ -18,7 +18,10 @@ export const GET = async (request: NextRequest) => {
             token_hash,
         });
         if (!error) {
-            return NextResponse.redirect(redirectTo);
+            await supabase.auth.signOut();
+            return NextResponse.redirect(
+                `${redirectTo.toString()}?message=Email+verification+successful.+Please+sign+in+to+access+the+app.`,
+            );
         }
     }
 

@@ -15,6 +15,6 @@ export const config = {
          * - forgot-password (forgot password page)
          * - api/invite (QStash queue calls - authorization occurs in endpoint)
          */
-        "/((?!_next/static|_next/image|favicon.ico|forgot-password|api/invite|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)",
+        "/((?!_next/static|_next/image|favicon.ico|forgot-password|api|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)",
     ],
 };

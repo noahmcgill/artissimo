@@ -4,16 +4,45 @@ CREATE TYPE "UserRole" AS ENUM ('ADMIN', 'INSTRUCTOR', 'STUDENT', 'GUEST');
 -- CreateEnum
 CREATE TYPE "CourseAccessRole" AS ENUM ('INSTRUCTOR', 'STUDENT', 'GUEST');
 
+-- CreateEnum
+CREATE TYPE "InvitationStatus" AS ENUM ('PENDING', 'ACCEPTED', 'DECLINED');
+
+-- CreateEnum
+CREATE TYPE "BatchInvitationCreationStatus" AS ENUM ('PENDING', 'COMPLETE');
+
 -- CreateTable
 CREATE TABLE "User" (
     "id" TEXT NOT NULL,
-    "role" "UserRole" NOT NULL DEFAULT 'STUDENT',
+    "role" "UserRole" NOT NULL DEFAULT 'GUEST',
     "email" TEXT NOT NULL,
     "name" TEXT NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
 
     CONSTRAINT "User_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "Invitation" (
+    "id" TEXT NOT NULL,
+    "email" TEXT NOT NULL,
+    "courseId" TEXT,
+    "invitedById" TEXT NOT NULL,
+    "role" "UserRole" NOT NULL DEFAULT 'GUEST',
+    "status" "InvitationStatus" NOT NULL DEFAULT 'PENDING',
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT "Invitation_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "BatchInvitationRequest" (
+    "id" TEXT NOT NULL,
+    "status" "BatchInvitationCreationStatus" NOT NULL DEFAULT 'PENDING',
+    "errors" JSONB NOT NULL DEFAULT '[]',
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT "BatchInvitationRequest_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -96,6 +125,9 @@ CREATE TABLE "Media" (
 CREATE UNIQUE INDEX "User_email_key" ON "User"("email");
 
 -- CreateIndex
+CREATE UNIQUE INDEX "Invitation_email_courseId_key" ON "Invitation"("email", "courseId");
+
+-- CreateIndex
 CREATE UNIQUE INDEX "Course_crn_key" ON "Course"("crn");
 
 -- CreateIndex
@@ -103,6 +135,12 @@ CREATE UNIQUE INDEX "Course_bookId_key" ON "Course"("bookId");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "Chapter_bookId_order_key" ON "Chapter"("bookId", "order");
+
+-- AddForeignKey
+ALTER TABLE "Invitation" ADD CONSTRAINT "Invitation_courseId_fkey" FOREIGN KEY ("courseId") REFERENCES "Course"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Invitation" ADD CONSTRAINT "Invitation_invitedById_fkey" FOREIGN KEY ("invitedById") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "Course" ADD CONSTRAINT "Course_bookId_fkey" FOREIGN KEY ("bookId") REFERENCES "Book"("id") ON DELETE SET NULL ON UPDATE CASCADE;

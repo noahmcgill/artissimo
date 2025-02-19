@@ -22,12 +22,18 @@ export function LoginForm({
 
     useEffect(() => {
         const errDesc = searchParams.get("error_description");
+        const message = searchParams.get("message");
 
         if (errDesc && errDesc !== "") {
             toast({
                 title: "Error",
                 description: errDesc,
                 variant: "destructive",
+            });
+        } else if (message && message !== "") {
+            toast({
+                title: "Success",
+                description: message,
             });
         }
     }, [searchParams, toast]);
